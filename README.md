@@ -5,7 +5,7 @@ Charlie The Sniffer is a tool created by me for a university project. It is actu
 - [Official website for LibPcap](http://www.tcpdump.org/pcap.html) 
 - [LibPcap in C](https://www.devdungeon.com/content/using-libpcap-c)
 
-## Ideas on how to progress in the development
+## Random ideas on how to bring it to life
 1. Liberty to choose which interface to use, if wlan in -> activate promiscous mode
 2. Printing live capture on the terminal
 3. Saving the capture on pcap files vs raw txt files (Can it be done?!)
