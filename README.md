@@ -1,7 +1,7 @@
 # CharlieTheSniffer
 Charlie The Sniffer is a tool created by me for a university project. It is actually a basic packet sniffer written in very bad C.
 ## DOCs grabbed from the web
-- [Tutorial Spoint for C](https://www.tutorialspoint.com/cprogramming/index.htm)
+- [Tutorials Point for C](https://www.tutorialspoint.com/cprogramming/index.htm)
 - [Official website for LibPcap](http://www.tcpdump.org/pcap.html) 
 - [LibPcap in C](https://www.devdungeon.com/content/using-libpcap-c)
 
