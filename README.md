@@ -4,6 +4,7 @@ Charlie The Sniffer is a tool created by me for a university project. It is actu
 - [Tutorials Point for C](https://www.tutorialspoint.com/cprogramming/index.htm)
 - [Official website for LibPcap](http://www.tcpdump.org/pcap.html) 
 - [LibPcap in C](https://www.devdungeon.com/content/using-libpcap-c)
+- [Write a good C main fun](https://opensource.com/article/19/5/how-write-good-c-main-function)
 
 ## Random ideas on how to bring it to life
 1. Liberty to choose which interface to use (if wlan in -> what actually is monitor mode? Do we actually need it?)
