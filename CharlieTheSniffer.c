@@ -51,7 +51,8 @@ void showError(char *msg);
 int checkArg(char *optarg);
 
 // Packet sniffer functions
-void printPacketInfo(const u_char *packet, struct pcap_pkthdr packet_header);
+void printPacketInfo(const u_char *packet, struct pcap_pkthdr packetHeader);
+void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u_char *packetBody);
 int capturePacket(char *dev);
 
 /* main */
@@ -91,7 +92,6 @@ int main(int argc, char *argv[]){
         usage(USAGE_FMT);
         return -1;
     }
-    
     return 0;
 }
 
@@ -144,7 +144,7 @@ int capturePacket(char *dev){
     char *errbuf;
     char buf[256];
     const u_char *packet;
-    struct pcap_pkthdr packet_header;
+    struct pcap_pkthdr packetHeader;
     printf("[!] STATUS: Live capturing [!]\n");
     handle = pcap_open_live(dev, BUFSIZ, 1, 100000, errbuf);
     if (handle == NULL){
@@ -152,7 +152,7 @@ int capturePacket(char *dev){
         showError(buf);
         return -1;
     }
-    packet = pcap_next(handle, &packet_header);
+    packet = pcap_next(handle, &packetHeader);
     // checking if we haven't get any packets
     if(packet == NULL){
         showError("No packet found.");
@@ -160,12 +160,18 @@ int capturePacket(char *dev){
     }
     /* Our function to output some info */
     printf("[!] STATUS: Showing results [!]\n");
-    printPacketInfo(packet, packet_header);
+    pcap_loop(handle, 0, packetHandler, capturePacket);
+    // printPacketInfo(packet, packetHeader);
     return 1;
 }
 
+/* Function to handle every action on the packets */
+void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u_char *packetBody){
+    printPacketInfo(packetBody, *packetHeader);
+}
+
 /* Function to print the info gathered from the packet */
-void printPacketInfo(const u_char *packet, struct pcap_pkthdr packet_header) {
-    printf("Packet capture length: %d\n", packet_header.caplen);
-    printf("Packet total length %d\n", packet_header.len);
+void printPacketInfo(const u_char *packet, struct pcap_pkthdr packetHeader) {
+    printf("Packet capture length: %d\n", packetHeader.caplen);
+    printf("Packet total length %d\n", packetHeader.len);
 }
