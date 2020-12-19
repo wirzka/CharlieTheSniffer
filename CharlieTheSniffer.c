@@ -8,6 +8,9 @@
 #include <sys/types.h>
 #include <pcap.h>
 #include <stdbool.h>
+#include <netinet/in.h>
+#include <netinet/if_ether.h>
+#include <time.h>
 
 /* Constant declaration */
 /*
@@ -20,38 +23,41 @@
     - character followed by a colon, then option required an argument
     - character not followed by a colon, then no argument required for the given option
 */
-#define OPTSTR "s:li:h"
-#define USAGE_FMT  "Usage for csniff:\n [-i ID] [-l] [-o] [-h] \n\
+
+#define OPTSTR "sli:h"
+#define USAGE_FMT  "Usage for csniff:\n [-s] [-i ID] [-l] [-o] [-h] \n\
 Example:\n ./csniff -i 1 -l \n\
 Tips:\n To select an interface you have to provide the ID number.\n"
 #define OUTFILENAME "ctscapture"
 #define ERR_FOPEN_OUTPUT "fopen(output, w)"
-#define ERR_DO_THE_NEEDFUL "Something went tremendously wrong. FLATLINE."
-#define DEFAULT_PROGNAME "csniff"
 
-extern int errno;
+// extern int errno;
 extern char *optarg;
-extern int opterr, optind;
-
+// extern int opterr, optind;
 
 /* Structure to save arguments options */
 typedef struct {
-    int          intFace;
+    char         *intFace;
     u_int32_t    flags;
     FILE         *output;
     bool         live;
 } options_t;
 
 /* Functions prototypes */
+// Support functions
 void showInterfaces();
-void usage(char *progname, int opt);
+void usage(char *msg);
 void showError(char *msg);
 int checkArg(char *optarg);
+
+// Packet sniffer functions
+void printPacketInfo(const u_char *packet, struct pcap_pkthdr packet_header);
+int capturePacket(char *dev);
 
 /* main */
 int main(int argc, char *argv[]){
     int opt, id;
-    options_t options = { 0, 0x0, stdout, false };
+    options_t options = {"", 0x0, stdout, false};
     // printf(getopt(argc, argv, OPTSTR));
     while ((opt = getopt(argc, argv, OPTSTR)) != EOF){
         switch(opt) {
@@ -61,12 +67,9 @@ int main(int argc, char *argv[]){
                 break;
             
             case 'i':
-                options.intFace = checkArg(optarg);
-                if(options.intFace != -1)
-                    printf("[+] You have opted for interface id: %d [+]\n", options.intFace);
-                else
-                    // call error
-                    showError("Interface ID not valid.");
+                options.intFace = optarg;
+                printf("\n[!] STATUS: Opening device %s [!]\n", options.intFace);
+                capturePacket(options.intFace);
                 break;
             
             // To enable live packet capture
@@ -77,24 +80,23 @@ int main(int argc, char *argv[]){
             // To select a given interfaces by issuing the ID
 
             default:
-                usage(USAGE_FMT, opt);
-                /* NOTREACHED */
-                break;
+                usage(USAGE_FMT);
+                // using return to exit the while loop too, so no other helping message will be issued
+                return -1;
         }
     }
 
     // If any given argument issues the helping message defined in USAGE_FMT
     if(argc < 2){
-        usage(USAGE_FMT, opt);
-        return 0;
+        usage(USAGE_FMT);
+        return -1;
     }
     
-    if(options.live){
-        printf("ok");
-    }
     return 0;
 }
 
+/*-------Support functions-------*/
+/* Function to show the available interfaces to the user */
 void showInterfaces(){
     char error[PCAP_ERRBUF_SIZE];
     // pcap structure for interfaces
@@ -119,14 +121,15 @@ void showInterfaces(){
         ~~~
         */
         for(temp=interfaces;temp;temp=temp->next){
-            printf("\n%d : %s \n",i++,temp->name);
+            printf("\n%d : %s",i++,temp->name);
         }
+        printf("\n");
     }
 }
 
-/* Function issuing the helping message */
-void usage(char *progname, int opt){
-    fprintf(stderr, progname?progname:DEFAULT_PROGNAME);
+/* Function to issuing helping message */
+void usage(char *msg){
+    fprintf(stderr, msg);
 }
 
 /* Function to standardise error output */
@@ -134,16 +137,35 @@ void showError(char *msg){
     fprintf(stderr, "%s\n%s\n", "[!] ERROR [!]", msg);
 }
 
-/* Function to check integeriness/positiveness the argument's option given with -i arg*/
-int checkArg(char *optarg){
-    if(isalpha(*optarg) != 0){
+/*-------Packet sniffer functions-------*/
+/* Function to start capturing packets */
+int capturePacket(char *dev){
+    pcap_t *handle;
+    char *errbuf;
+    char buf[256];
+    const u_char *packet;
+    struct pcap_pkthdr packet_header;
+    printf("[!] STATUS: Live capturing [!]\n");
+    handle = pcap_open_live(dev, BUFSIZ, 1, 100000, errbuf);
+    if (handle == NULL){
+        sprintf(buf, "%s", errbuf);
+        showError(buf);
         return -1;
-    }  else {
-        int intArg = atoi(optarg);
-        if(intArg < 0){
-            return intArg * -1;
-        } else {
-            return intArg;
-        }
     }
+    packet = pcap_next(handle, &packet_header);
+    // checking if we haven't get any packets
+    if(packet == NULL){
+        showError("No packet found.");
+        return -1;
+    }
+    /* Our function to output some info */
+    printf("[!] STATUS: Showing results [!]\n");
+    printPacketInfo(packet, packet_header);
+    return 1;
+}
+
+/* Function to print the info gathered from the packet */
+void printPacketInfo(const u_char *packet, struct pcap_pkthdr packet_header) {
+    printf("Packet capture length: %d\n", packet_header.caplen);
+    printf("Packet total length %d\n", packet_header.len);
 }
