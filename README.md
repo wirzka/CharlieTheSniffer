@@ -24,7 +24,7 @@ So let's begin.
 ### TCP Packet
 The Tranmission Control Protocol packet is composed by a header, that includes all the options and details on how the packet should be handled, and a payload, containing the actual data transmitted.
 
-Let's take a look at the header structure:
+Let's take a look at the header structure (source: [RFC 793](https://tools.ietf.org/html/rfc793)):
 
 ![TCP Header structure issued by RFC](./img/tcpheader.PNG)
 
