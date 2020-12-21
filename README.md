@@ -134,7 +134,7 @@ Here you will find documents and other references that I used to bring CharlieTh
 * [pcap_open_live man page](https://www.tcpdump.org/manpages/pcap_open_live.3pcap.html)
 * [pcap_findalldevs man page](https://www.tcpdump.org/manpages/pcap_findalldevs.3pcap.html)
 * [pcap_loop](https://www.tcpdump.org/manpages/pcap_loop.3pcap.html)
-* [Protocol numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
+* [Protocol numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.txt)
 * [RFC 768](https://tools.ietf.org/html/rfc768)
 * [RFC 791](https://tools.ietf.org/html/rfc791)
 * [RFC 792](https://tools.ietf.org/html/rfc792)
