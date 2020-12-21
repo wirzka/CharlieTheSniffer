@@ -137,4 +137,17 @@ To do so, we just have to think about the packet structure. It is just a sequenc
 | Payload           | X + Ethernet Size + IP header length + TCP header length |
 
 ## References
+Here you will find documents and other references that I used to bring CharlieTheSniffer to life:
+* [Official website for LibPcap](http://www.tcpdump.org/pcap.html) 
+* [pcap_open_live() man page](https://www.tcpdump.org/manpages/pcap_open_live.3pcap.html)
+* [pcap_findalldevs() man page](https://www.tcpdump.org/manpages/pcap_findalldevs.3pcap.html)
+* [pcap_loop](https://www.tcpdump.org/manpages/pcap_loop.3pcap.html)
+* [Protocol numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
+* [RFC 768](https://tools.ietf.org/html/rfc768)
+* [RFC 791](https://tools.ietf.org/html/rfc791)
+* [RFC 792](https://tools.ietf.org/html/rfc792)
+* [RFC 793](https://tools.ietf.org/html/rfc793)
+* [Tutorials Point for C](https://www.tutorialspoint.com/cprogramming/index.htm)
+* [Write a good C main fun](https://opensource.com/article/19/5/how-write-good-c-main-function)
+* []()
 ***Btw, KISS is your best friend.***
