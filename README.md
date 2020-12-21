@@ -22,7 +22,7 @@ So let's begin.
 (Add quick brief on TCP/IP behaviours)
 
 ### TCP Packet
-The Tranmission Control Protocol packet is composed by a header, that includes all the options and details on how the packet should be handled, and a payload, containing the actual data transmitted.
+The Transmission Control Protocol packet is composed by a header, that includes all the options and details on how the packet should be handled, and a payload, containing the actual data transmitted.
 
 Let's take a look at the header structure (source: [RFC 793](https://tools.ietf.org/html/rfc793)):
 
@@ -31,7 +31,8 @@ Let's take a look at the header structure (source: [RFC 793](https://tools.ietf.
 Just to clarify, the first number row (0-3), are bytes (It indicates, the second number row are bits. Giving that, this is the map that we must follow to gather the right information from the TCP header. For example, we will need to know what will be the source port and the destination port of the given packet. In this case, we will have to fetch from the header the first 16 bytes for the former and the second 16 bytes for the latter. And so on for every other information that we will need.
 
 ### IP Packet
-The Internet Protocol packet is similar to the TCP packet, it is composed by a header and a payload. So we will have again the map to follow.
+The Internet Protocol packet is similar to the TCP packet, it is composed by a header and a payload. Obviously, the packet fields will differ but the logic will be the same.
+
 Give it a look (source: [RFC 791](https://tools.ietf.org/html/rfc791)):
 
 ![IP Header structure issued by RFC](./img/ipheader.PNG)
@@ -46,9 +47,19 @@ It will be as follow (source [RFC 792](https://tools.ietf.org/html/rfc792)):
 
 ![ICMP ECHO message](./img/icmpecho.PNG)
 
----
+
 ### UDP Datagram
 The User Datagram Protocol is the opposite of the TCP. While TCP is connection-oriented, UDP is connectionless. It does not mean that there won't be any connection as suggested, but that for each connection that will be provided it won't verify the receipt.
 For this reason and for more technical others, the packet (called datagram in connectionless protocols) structure is quite simpler.
+
+Here we don't have only a header and a payload, infact the UDP datagram is shipped with a pseudoheader prefix generated from the IP header, that it is necessary to calculate the checksum.
+
+UDP datagram payload(source [RFC 768](https://tools.ietf.org/html/rfc768)):
+
+![UDP datagram](./img/udpdatagram.png)
+
+UDP pseudo header (source [RFC 768](https://tools.ietf.org/html/rfc768)):
+
+![UDP datagram header](./img/udppseudo.png)
 
 ***Btw, KISS is your best friend.***
