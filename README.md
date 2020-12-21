@@ -46,7 +46,9 @@ It will be as follow (source [RFC 792](https://tools.ietf.org/html/rfc792)):
 
 ![ICMP ECHO message](./img/icmpecho.PNG)
 
-
-### UDP Packet
+---
+### UDP Datagram
+The User Datagram Protocol is the opposite of the TCP. While TCP is connection-oriented, UDP is connectionless. It does not mean that there won't be any connection as suggested, but that for each connection that will be provided it won't verify the receipt.
+For this reason and for more technical others, the packet (called datagram in connectionless protocols) structure is quite simpler.
 
 ***Btw, KISS is your best friend.***
