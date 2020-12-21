@@ -93,7 +93,21 @@ Let's see the table:
 | sniffer               | printUdpDatagram()        | it prints the UDP datagram |
 | sniffer               | printPayload()        | it prints the payload |
 
-Second, let's take a look at the functions used from the libpcap library. Again, I am going to use a table.
+Second, let's take a look at the functions used from the libpcap library. Again, I am going to use a table. This time, in the first column I will put one of my function where we can find the caller to the libpcap function.
+
+| Position   | Function name   |   Task                                     | 
+| :-------------: | :-------------: | :------------------------------------------:
+| showInterfaces()      | pcap_findalldevs()        | it constructs a list of network devices that can be opened with other functions |
+| cookingPreSniffer()               | pcap_open_live()        | it is used to obtain a packet capture handle to sniff packet on the network |
+| support               | showError()        | it prompts the error in a standardized and simple format|
+| support               | showStatus()        | it prompts the status in a standardized and simple format|
+| sniffer               | cookingPreSniffer()        | it prepares the dev to sniff, then it launches the actual sniffing task|
+| sniffer               | packetHandler()        | it handles actions to be done against every captured packet|
+| sniffer               | printTcpHeader()        | it prints the TCP header |
+| sniffer               | printIpHeader()        | it prints the IP header |
+| sniffer               | printIcmpHeader()        | it prints the ICMP header |
+| sniffer               | printUdpDatagram()        | it prints the UDP datagram |
+| sniffer               | printPayload()        | it prints the payload |
 
 
 ***Btw, KISS is your best friend.***
