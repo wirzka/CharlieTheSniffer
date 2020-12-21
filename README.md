@@ -17,7 +17,7 @@ Charlie The Sniffer is a tool created by me for a university project. It is actu
 8. Give the user the choice to sniff only his traffic or all traffic coming to his in
 
 ## Network packets format
-Before going deeper with the code, in order to gain a better understanding of the logic and of the code, we have to understand how the data transmitted are formatted.
+Before going deeper with the code, in order to gain a better understanding of the logic behind the code, we have to understand how the data transmitted are formatted.
 So let's begin.
 (Add quick brief on TCP/IP behaviours)
 
