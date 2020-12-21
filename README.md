@@ -28,6 +28,11 @@ Let's take a look at the header structure:
 
 ![TCP Header structure issued by RFC](./img/tcpheader.PNG)
 
-This is our map that we must follow to gather the right information from the TCP header. For example, we will need to know what will be the source port and the destination port of the given packet. In this case, we have to fetch from the header the first 16 bytes for the former and the second 16 bytes for the latter
+Just to clarify, the first number row (0-3), are bytes (It indicates, the second number row are bits. Giving that, this is the map that we must follow to gather the right information from the TCP header. For example, we will need to know what will be the source port and the destination port of the given packet. In this case, we will have to fetch from the header the first 16 bytes for the former and the second 16 bytes for the latter. And so on for every other information that we will need.
+
+### IP Packet
+The Internet Protocol packet is similar to the TCP packet, it is composed by a header and a payload.
+
+![IP Header strcture issued by RFC
 
 ***Btw, KISS is your best friend.***
