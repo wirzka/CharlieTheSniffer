@@ -1,11 +1,5 @@
 # CharlieTheSniffer
 Charlie The Sniffer is a tool created by me for a university project. It is actually a basic packet sniffer written in very bad C.
-## DOCs grabbed from the web
-- [Tutorials Point for C](https://www.tutorialspoint.com/cprogramming/index.htm)
-- [Official website for LibPcap](http://www.tcpdump.org/pcap.html) 
-- [LibPcap in C](https://www.devdungeon.com/content/using-libpcap-c)
-- [Write a good C main fun](https://opensource.com/article/19/5/how-write-good-c-main-function)
-- [Protocol numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
 
 ## Random ideas on how to bring it to life
 1. Liberty to choose which interface to use (if wlan in -> what actually is monitor mode? Do we actually need it?)
@@ -17,9 +11,7 @@ Charlie The Sniffer is a tool created by me for a university project. It is actu
 7. It has to be a cmd line tool, so parsing argument at the beginning is a MUST -> help message is REQUIRED
 8. Give the user the choice to sniff only his traffic or all traffic coming to his in
 
-Table of Contents
-=================
-
+## Table of Contents
   * [Installation](#installation)
   * [Usage](#usage)
   * [Network packets format](#network-packets-format)
