@@ -39,9 +39,14 @@ Give it a look (source: [RFC 791](https://tools.ietf.org/html/rfc791)):
 ### ICMP Packet
 The Internet Control Message Protocol is a little bit different. It does not rely on a dedicated packet structure, but it is integrated with the IP header where we will find the number 1 inside the protocol flag, then the first octet of the data portion of the datagram is used as the ICMP type field, that will affect the following bits. 
 The data field will differ based on which message will be provided.
-The most common ICMP message is the ECHO/ECHO REPLY, known for the most as PING.
+
+The most common ICMP message is the ECHO/ECHO REPLY, unchained by the well known PING command.
+
 It will be as follow (source [RFC 792](https://tools.ietf.org/html/rfc792)):
+
 ![ICMP ECHO message](./img/icmpecho.PNG)
+
+
 ### UDP Packet
 
 ***Btw, KISS is your best friend.***
