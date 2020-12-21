@@ -6,6 +6,7 @@ Charlie The Sniffer is a tool created by me for a university project. It is actu
 - [LibPcap in C](https://www.devdungeon.com/content/using-libpcap-c)
 - [Write a good C main fun](https://opensource.com/article/19/5/how-write-good-c-main-function)
 - [Protocol numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)
+
 ## Random ideas on how to bring it to life
 1. Liberty to choose which interface to use (if wlan in -> what actually is monitor mode? Do we actually need it?)
 2. Printing live capture on the terminal
@@ -15,6 +16,25 @@ Charlie The Sniffer is a tool created by me for a university project. It is actu
 6. Adding filter to sniff specific proto
 7. It has to be a cmd line tool, so parsing argument at the beginning is a MUST -> help message is REQUIRED
 8. Give the user the choice to sniff only his traffic or all traffic coming to his in
+
+Table of Contents
+=================
+
+  * [Installation](#installation)
+  * [Usage](#usage)
+  * [Network packets format](#network-packets-format)
+    * [TCP Packet](#plug_list_versions)
+    * [IP Packet](#plug_url_for_download)
+    * [ICMP Packet](#plug_build)
+  * [The program behaviour](#example-of-the-usage)
+    * [High level view](#dependencies)
+    * [Mid level view](#dependencies)
+    * [Low level view](#dependencies)
+    * [Gathering the right information](#supported-os)
+  * [References](#readme-in-another-language)
+  
+## Installation
+## Usage
 
 ## Network packets format
 Before going deeper with the code, in order to gain a better understanding of the logic behind the code, we have to understand how the data transmitted are formatted.
