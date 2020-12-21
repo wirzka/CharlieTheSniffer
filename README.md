@@ -65,11 +65,16 @@ UDP pseudo header (source [RFC 768](https://tools.ietf.org/html/rfc768)):
 ## The program behaviour
 This sniffer has been created to be used from a command line interface. It means that in order to use it you have to provide some options and arguments in addition to the program name. We are going to look them in details later.
 
-Now, we have to focus on the behaviour at the mid-high level:
+### High level view
+Now, we have to focus on the behaviour at the mid-high level, it is as follow:
 1. Launch the program with the choosen interface and options;
 2. Charlie will check if the device is available, if it is not, it will tell you and exit;
-3. Otherwise, if it is available, it will open the cookingPreSniffer function to prepare the handle for the device with pcap_open_live() function, if negative it will tell you and stop;
-4. If it succeeds, it will go on and start the actual sniffing with pcap_loop(), this is an interesting function that we are going to see later in details;
-5. From there, for every capture packet, it will check the protocol then it will print out on terminal/file the whole TCP or UDP packet (headers + payloads)
+3. Otherwise, if it is available, it will prepare the device so it will be able to sniff, if negative it will tell you and stop;
+4. If it succeeds, it will go on a sort of loop and start the actual sniffing;
+5. Now, for every captured packet, it will check the protocol then it will print out on terminal/file the whole TCP or UDP packet (headers + payloads)
+
+### Mid level view
+Once we have the high level in mind, let's see what functions we are going to use.
+To 
 
 ***Btw, KISS is your best friend.***
