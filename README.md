@@ -23,7 +23,11 @@ So let's begin.
 
 ### TCP Packet
 The Tranmission Control Protocol packet is composed by a header, that includes all the options and details on how the packet should be handled, and a payload, containing the actual data transmitted.
+
 Let's take a look at the header structure:
-![TCP Header structure issued by RFC](./imgs/tcpheader.png)
+
+![TCP Header structure issued by RFC](./img/tcpheader.PNG)
+
+This is our map that we must follow to gather the right information from the TCP header. For example, we will need to know what will be the source port and the destination port of the given packet. In this case, we have to fetch from the header the first 16 bytes for the former and the second 16 bytes for the latter
 
 ***Btw, KISS is your best friend.***
