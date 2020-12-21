@@ -101,6 +101,15 @@ Second, let's take a look at the functions used from the libpcap library. Again,
 | cookingPreSniffer()               | pcap_open_live()        | it is used to obtain a packet capture handle to sniff packet on the network |
 | cookingPreSniffer()               |  pcap_loop()        | it starts the actual sniffing and it does it by looping|
 
+### Gathering the right information
+I find all this stuff quite interesting, but it is useless if we don't know how to get exactly the right information from a packet composed by multiple bytes.
+To do so, we just have to think about the packet structure. It is just a sequence of bytes, so if we want to move get some portion of it all we need is to do some basic maths. Just a couple of sums/diffs and we well have what we want. Let's see it in _action_ inside a table:
 
+| Variable          | Location in bytes   |   
+| :---------------: | :-------------: 
+| Ethernet size     |     X               |
+| IP header length            | X + Ethernet Size |
+| TCP header length | X + Ethernet Size + IP header length |
+| Payload           | X + Ethernet Size + IP header length + TCP header length |
 
 ***Btw, KISS is your best friend.***
