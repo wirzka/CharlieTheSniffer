@@ -75,6 +75,25 @@ Now, we have to focus on the behaviour at the mid-high level, it is as follow:
 
 ### Mid level view
 Once we have the high level in mind, let's see what functions we are going to use.
-To 
+First, we are going to see the functions created by me. I am going to show them with the aid of a table. The table is quite self explanatory, but just to be clear in the first column I've put the function category that we are going to find inside the code comments. These categories are just a logical subdivisione made by me to have a cleaner code.
+
+Let's see the table:
+
+| Function category   | Function name   |   Task                                     | 
+| :-------------: | :-------------: | :------------------------------------------:
+| support               | showInterfaces()        | it prompts the available interfaces using the pcap_findalldevs()|
+| support               | usage()        | it issues the helping message |
+| support               | showError()        | it prompts the error in a standardized and simple format|
+| support               | showStatus()        | it prompts the status in a standardized and simple format|
+| sniffer               | cookingPreSniffer()        | it prepares the dev to sniff, then it launches the actual sniffing task|
+| sniffer               | packetHandler()        | it handles actions to be done against every captured packet|
+| sniffer               | printTcpHeader()        | it prints the TCP header |
+| sniffer               | printIpHeader()        | it prints the IP header |
+| sniffer               | printIcmpHeader()        | it prints the ICMP header |
+| sniffer               | printUdpDatagram()        | it prints the UDP datagram |
+| sniffer               | printPayload()        | it prints the payload |
+
+Second, let's take a look at the functions used from the libpcap library. Again, I am going to use a table.
+
 
 ***Btw, KISS is your best friend.***
