@@ -26,6 +26,7 @@ Table of Contents
     * [TCP Packet](#tcp-packet)
     * [IP Packet](#ip-packet)
     * [ICMP Packet](#icmp-packet)
+    * [UDP Datagram](#udp-datagram)
   * [The program behaviour](#the-program-behaviour)
     * [High level view](#high-level-view)
     * [Mid level view](#mid-level-view)
