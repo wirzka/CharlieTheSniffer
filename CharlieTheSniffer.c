@@ -1,34 +1,37 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     TODOs:
-    - Enhance the packet handler
+    [✔] Enhance the packet handler
         [✔] Do not print on a log file, but on terminal
         [✔] The key is to use the packetHandler in a smart way (Put the proto recognition inside it, then call the respective printing function for the headers)
-    - Enhance packet capture:
+    [ ] Enhance packet capture:
         [ ] Add type control on ICMP packet
         [ ] Format a better output
         [ ] Provide filtering capabilities
-    - Provide pcap output file option
-    - Ethernet Frame
+    [ ] Provide pcap output file option
+    [ ] Ethernet Frame
+    [ ] Clean code
+    [ ] Clean options structure
+    [ ] Handle case where no interface has been given
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <libgen.h>
+
 #include <errno.h>
-#include <string.h>
 #include <getopt.h>
-#include <sys/types.h>
-#include <pcap.h>
-#include <stdbool.h>
-#include <netinet/in.h>
 #include <netinet/if_ether.h>
-#include <net/ethernet.h>
+#include <netinet/in.h>
 #include <netinet/ip.h>
+#include <netinet/ip_icmp.h>
+#include <net/ethernet.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
-#include <netinet/ip_icmp.h>
+#include <libgen.h>
+#include <pcap.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 #include <time.h>
-
+#include <unistd.h>
 
 /* Constant declaration */
 /*
@@ -49,10 +52,6 @@ Tips:\n To select an interface you have to provide the ID number.\n"
 #define ERR_FOPEN_OUTPUT "fopen(output, w)"
 #define SIZE_ETHERNET 14
 
-#define IP_HL(ip)		    (((ip)->ipVhl) & 0x0f)
-#define IP_V(ip)		    (((ip)->ipVhl) >> 4)
-
-
 typedef u_int tcp_seq;
 
 // extern int errno;
@@ -67,54 +66,6 @@ typedef struct {
     bool         live;
 } options_t;
 
-
-/* Ethernet header */
-// void oldStuff(){
-// typedef struct {
-//     u_char ethDstHost[ETHER_ADDR_LEN];
-//     u_char ethSrcHost[ETHER_ADDR_LEN];
-//     u_short ethProto; /* ARP, RARP, IP, ... */
-// } ethHeader_t;
-
-// /* IP header */
-// typedef struct {
-//         u_char ipVhl;
-//         u_char ipTos;
-//         u_short ipLen;
-//         u_short ipId;
-//         u_short ipOffset;
-// #define IP_RF 0x8000		/* reserved fragment flag */
-// #define IP_DF 0x4000		/* don't fragment flag */
-// #define IP_MF 0x2000		/* more fragments flag */
-// #define IP_OFFMASK 0x1fff	/* mask for fragmenting bits */
-//         u_char ipTtl;
-//         u_char ipProto;
-//         u_short ipSum;
-//         struct in_addr ipSrc,ipDst;
-// } ipHeader_t;
-
-// /* TCP header */
-// typedef struct {
-//     u_short srcPort;
-//     u_short dstPort;
-//     tcp_seq seqNum;
-//     tcp_seq ackNum;
-//     u_char offx2;
-//     #define TH_OFF(th)  (((th)->offx2 & 0xf0) >> 4)
-//     #define TH_FIN 0x01
-// #define TH_SYN 0x02
-// #define TH_RST 0x04
-// #define TH_PUSH 0x08
-// #define TH_ACK 0x10
-// #define TH_URG 0x20
-// #define TH_ECE 0x40
-// #define TH_CWR 0x80
-// #define TH_FLAGS (TH_FIN|TH_SYN|TH_RST|TH_ACK|TH_URG|TH_ECE|TH_CWR)
-//     u_short win;
-//     u_short sum;
-//     u_short urgPoint;
-// } tcpHeader_t;
-// }
 struct sockaddr_in source,dest;
 
 /* Functions prototypes */
@@ -123,23 +74,23 @@ void showInterfaces();
 void usage(char *msg);
 void showError(char *msg);
 void showStatus(char *msg);
-int checkArg(char *optarg);
-
 // Packet sniffer functions
 void printEthHeader(const u_char *packetBody);
 void printIpHeader(const u_char *packetBody);
 void printTcpHeader(const u_char *packetBody, int size);
 void printPacketInfo(const u_char *packet, struct pcap_pkthdr packetHeader);
 void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u_char *packetBody);
-// void printEthHeader(const *u_char Buffer, int size);
-int capturePacket(char *dev);
+int cookingPreSniffer(char *dev);
 
 /* main */
 int main(int argc, char *argv[]){
     int opt, id;
-    options_t options = {"", 0x0, stdout, false};
+    // Initializing the options struct with the following values
+    options_t options = {NULL, 0x0, stdout, false};
+    // Array that will be used to provide a message
     char msg[256];
-    // printf(getopt(argc, argv, OPTSTR));
+
+    // We start looping till we finish to fetch the arguments issued at the launching of the program
     while ((opt = getopt(argc, argv, OPTSTR)) != EOF){
         switch(opt) {
             // To call showInterfaces function and print the interfaces' identifier
@@ -147,32 +98,50 @@ int main(int argc, char *argv[]){
                 showInterfaces();
                 break;
             
+            // To select the interface where we want to sniff
             case 'i':
+                // Setting the device name inside our options structure so we can use it later
+                // printf(optarg);
+                // if (optarg == NULL){
+                //     showError("No interface has been given");
+                //     sleep(3);
+                //     exit(0);
+                // }  else if (isdigit(optarg) == 1){
+                //     showError("Not a valid interface has been given");
+                //     sleep(3);
+                //     exit(0);
+                // }
                 options.intFace = optarg;
+                
+                // Cooking the message with snprintf to avoid overflow and then call the standardised output function
                 snprintf(msg, sizeof(msg), "%s %s", "Opening device", options.intFace);
                 showStatus(msg);
-                sleep(2);
-                capturePacket(options.intFace);
+                
+                // Calling the cooking function that will set the given device for the sniffing phase
+                cookingPreSniffer(options.intFace);
                 break;
             
             // To enable live packet capture
             case 'l':
+                // Setting the device name inside our options structure so we can use it later
                 options.live = true;
                 break;
-
-            // To select a given interfaces by issuing the ID
-
+            
+            // For any other case just return the helping message
             default:
                 usage(USAGE_FMT);
-                // using return to exit the while loop too, so no other helping message will be issued
-                return -1;
+                /*
+                    using exit to quit the entire program and not just the while loop
+                    so no other helping message will be issued
+                */
+                exit(0);
         }
     }
 
     // If any given argument issues the helping message defined in USAGE_FMT
     if(argc < 2){
         usage(USAGE_FMT);
-        return -1;
+        exit(0);
     }
     return 0;
 }
@@ -180,9 +149,12 @@ int main(int argc, char *argv[]){
 /*-------Support functions-------*/
 /* Function to show the available interfaces to the user */
 void showInterfaces(){
+    // Array where will store any error message
     char error[PCAP_ERRBUF_SIZE];
+
     // pcap structure for interfaces
     pcap_if_t *interfaces, *temp;
+    // variable that will be useful later to print the interfaces
     int i=0;
     /*
     Looking for any interfaces on the local machine
@@ -222,35 +194,52 @@ void showError(char *msg){
 /* Function to standardise status output */
 void showStatus(char *msg){
     fprintf(stdout, "%s: %s [!]\n", "[!] STATUS", msg);
-    // fflush(stdout); ~~~~~~~~~~~IS IT NEEDED? GO DEEPER HERE
 }
 
 /*-------Packet sniffer functions-------*/
 /* Function to start capturing packets */
-int capturePacket(char *dev){
+int cookingPreSniffer(char *dev){
     pcap_t *handle;
-    char *errbuf;
+    char *errbuf[512];
     char buf[256];
     const u_char *packet;
     struct pcap_pkthdr packetHeader;
     showStatus("Live capturing");
+    /*
+        PROTOTYPE:
+        pcap_t *pcap_open_live(const char *device, int snaplen,
+                               int promisc, int to_ms, char *errbuf);
+        EXPLANATION:
+        device  =   our interface
+        snaplen =   to specifies snapshot length to be set on the handle
+        promisc =   insert non-zero value to set interface in promiscuous mode
+        to_ms   =   packet buffer timeout in milliseconds
+        errbuf  =   array to store any error retrieved
+    */
+    // printf(errbuf);
     handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+    // printf(errbuf);
+    // sleep(3);
+    // In the case something blown up
     if (handle == NULL){
-        sprintf(buf, "%s", errbuf);
+        snprintf(buf, sizeof(buf), "%s", errbuf);
         showError(buf);
         return -1;
     }
-    packet = pcap_next(handle, &packetHeader);
-    // checking if we haven't get any packets
-    if(packet == NULL){
-        showError("No packet found.");
-        return -1;
-    }
-    /* Our function to output some info */
+    
     showStatus("Showing results");
-    sleep(2);
-    pcap_loop(handle, 0, packetHandler, capturePacket);
-    // printPacketInfo(packet, packetHeader);
+    
+    /*
+        PROTOTYPE:
+        int pcap_loop(pcap_t *p, int cnt,
+                      pcap_handler callback, u_char *user);
+        EXPLANATION:
+        p        =   the packet handle/file to fetch
+        cnt      =   numbers of packet to be processed (-1 OR 0 means infinity)
+        callback =   the function to be called everytime we fetch a packet
+        user     =   arguments for the callbakc function, we don't have any
+    */
+    pcap_loop(handle, 0, packetHandler, NULL);
     return 1;
 }
 
@@ -263,7 +252,7 @@ void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u
             printIcmpPacket(packetBody, headerLen);
             break;
         case 2:
-            // printf("IGMP");
+            // IGMP
             break;
         case 6:
             printTcpPacket(packetBody, headerLen);
@@ -272,7 +261,7 @@ void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u
             printUdpPacket(packetBody, headerLen);
             break;
         default:
-            // printf("others");
+            // othjers
             break;
     }
 }
@@ -392,18 +381,6 @@ void printUdpPacket(const u_char *packetBody, int length){
 	// PrintData(Buffer + header_size , Size - header_size);
 }
 
-/* Function to grab the packet protocol from the header */
-void printPacketProtocol(const u_char *packetBody){
-    struct ether_header *ethHeader;    
-    ethHeader = (struct ether_header *) packetBody;
-
-    if (ntohs(ethHeader->ether_type) == ETHERTYPE_IP)
-        printf("IP\n");
-    else if(ntohs(ethHeader->ether_type) == ETHERTYPE_ARP)
-        printf("ARP\n");
-    else if(ntohs(ethHeader->ether_type) == ETHERTYPE_REVARP)
-        printf("REVERSE ARP\n");
-}
 
 /* Function to print ICMP packet*/
 void printIcmpPacket(const u_char *packetBody, int length){
