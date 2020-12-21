@@ -62,4 +62,14 @@ UDP pseudo header (source [RFC 768](https://tools.ietf.org/html/rfc768)):
 
 ![UDP datagram header](./img/udppseudo.png)
 
+## The program behaviour
+This sniffer has been created to be used from a command line interface. It means that in order to use it you have to provide some options and arguments in addition to the program name. We are going to look them in details later.
+
+Now, we have to focus on the behaviour at the mid-high level:
+1. Launch the program with the choosen interface and options;
+2. Charlie will check if the device is available, if it is not, it will tell you and exit;
+3. Otherwise, if it is available, it will open the cookingPreSniffer function to prepare the handle for the device with pcap_open_live() function, if negative it will tell you and stop;
+4. If it succeeds, it will go on and start the actual sniffing with pcap_loop(), this is an interesting function that we are going to see later in details;
+5. From there, for every capture packet, it will check the protocol then it will print out on terminal/file the whole TCP or UDP packet (headers + payloads)
+
 ***Btw, KISS is your best friend.***
