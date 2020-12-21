@@ -23,15 +23,15 @@ Table of Contents
   * [Installation](#installation)
   * [Usage](#usage)
   * [Network packets format](#network-packets-format)
-    * [TCP Packet](#plug_list_versions)
-    * [IP Packet](#plug_url_for_download)
-    * [ICMP Packet](#plug_build)
-  * [The program behaviour](#example-of-the-usage)
-    * [High level view](#dependencies)
-    * [Mid level view](#dependencies)
-    * [Low level view](#dependencies)
-    * [Gathering the right information](#supported-os)
-  * [References](#readme-in-another-language)
+    * [TCP Packet](#tcp-packet)
+    * [IP Packet](#ip-packet)
+    * [ICMP Packet](#icmp-packet)
+  * [The program behaviour](#the-program-behaviour)
+    * [High level view](#high-level-view)
+    * [Mid level view](#mid-level-view)
+    * [Low level view](#low-level-view)
+    * [Gathering the right information](#gathering-the-right-information)
+  * [References](#references)
   
 ## Installation
 ## Usage
@@ -135,4 +135,5 @@ To do so, we just have to think about the packet structure. It is just a sequenc
 | TCP header length | X + Ethernet Size + IP header length |
 | Payload           | X + Ethernet Size + IP header length + TCP header length |
 
+## References
 ***Btw, KISS is your best friend.***
