@@ -158,7 +158,9 @@ Second, let's take a look at the functions used from the libpcap library. Again,
 | :-------------: | :-------------: | :------------------------------------------:
 | showInterfaces()      | pcap_findalldevs()        | it constructs a list of network devices that can be opened with other functions |
 | cookingPreSniffer()               | pcap_open_live()        | it is used to obtain a packet capture handle to sniff packet on the network |
+| cookingPreSniffer()               |  pcap_dump_open()        | it opens a pcap file to start writing captured packet|
 | cookingPreSniffer()               |  pcap_loop()        | it starts the actual sniffing and it does it by looping|
+| cookingPreSniffer()               |  pcap_dump_close()        | it ends the writing process and closes the pcap file|
 
 ### Low level view
 For this section, I will let the code comments speak for me as I think that is unecessary write each function prototype and show each arguments here.
