@@ -31,10 +31,45 @@ This tool is for educational purpose only. Before use it, you must ensure that y
   * [References](#references)
   
 ## Installation
+First of all, you have to download libpcap-dev on your host, to do so type:
+
+``$ sudo apt install libpcap-dev``
+
+Then, reach the directory where Charlie is, then compile from terminal:
+
+``$ gcc CharlieTheSniffer.c -o CharlieTheSniffer -lpca``
+
 ## Usage
+Once you have complete the installation process, you can launch it with:
+
+``$ ./CharlieTheSniffer``
+
+By doing so, it will provide the helping message:
+
+```
+--------------- CharlieTheSniffer ---------------
+
+Usage:
+ [-s] [-i ID] [-h] 
+        -s show interfaces
+        -i <ID> to select a interface by giving its name
+        -h show this helping message
+
+Example:
+ ./csniff -i eth0 
+Tips:
+If you don't want the output on terminal you can direct it to a file with the pipeling power:
+    $ sudo charliethesniffer.c -i eth0 > file_with_output
+Disclaimer:
+You MUST use this tool only within environment where
+you have officially the rights to do so.
+```
+
+**Remember that you have to run it as root/sudoers.**
+
 ##  Dependencies
 
-**OS**: Linux (Tested on Pop_OS! Linux Kernel vx.x)
+**OS**: Linux (Tested on Linux pop-os 5.8.0-7630-generic)
 
 **Libraries**: libpcap
 
