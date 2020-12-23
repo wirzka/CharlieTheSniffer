@@ -4,13 +4,13 @@
         [✔] Do not print on a log file, but on terminal
         [✔] The key is to use the packetHandler in a smart way (Put the proto recognition inside it, then call the respective printing function for the headers)
     [ ] Enhance packet capture:
-        [ ] Add type control on ICMP packet
+        [✔] Add type control on ICMP packet
         [ ] Format a better output
         [ ] Provide filtering capabilities
     [✔] Provide pcap output file option
-    [ ] Clean code
-    [ ] Clean options structure
-    [ ] Handle case where no interface has been given
+    [✔] Clean code
+    [✔] Clean options structure
+    [✔] Handle case where no interface has been given
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <errno.h>
