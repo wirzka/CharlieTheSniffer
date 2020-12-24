@@ -56,9 +56,9 @@ Usage:
         -h show this helping message
 
 Example:
- ./csniff -i eth0 
+    # ./csniff -i eth0 
 Tips:
-If you don't want the output on terminal you can direct it to a file with the pipeling power:
+If you don't want the output on terminal you can direct it to a file with redirection power:
     $ sudo charliethesniffer.c -i eth0 > file_with_output
 Disclaimer:
 You MUST use this tool only within environment where
