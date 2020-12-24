@@ -50,13 +50,13 @@ By doing so, it will provide the helping message:
 --------------- CharlieTheSniffer ---------------
 
 Usage:
- [-s] [-i ID] [-h] 
+ # ./CharlieTheSniffer [-s] [-i ID] [-h] 
         -s show interfaces
         -i <ID> to select a interface by giving its name
         -h show this helping message
 
 Example:
-    # ./csniff -i eth0 
+    # ./CharlieTheSniffer -i eth0 
 Tips:
 If you don't want the output on terminal you can direct it to a file with redirection power:
     $ sudo charliethesniffer.c -i eth0 > file_with_output
@@ -65,7 +65,7 @@ You MUST use this tool only within environment where
 you have officially the rights to do so.
 ```
 
-**Remember that you have to run it as root/sudoers.**
+**Remember that you have to run it as root/sudoer.**
 
 ##  Dependencies
 
