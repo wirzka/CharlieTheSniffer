@@ -14,18 +14,16 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include <errno.h>
-#include <getopt.h>
-#include <netinet/if_ether.h>
-#include <netinet/igmp.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <netinet/ip_icmp.h>
-#include <net/ethernet.h>
-#include <netinet/tcp.h>
-#include <netinet/udp.h>
+#include <getopt.h> /* library to parse arguments */
+#include <netinet/if_ether.h> /* library to handle ethernet frame */
+#include <netinet/igmp.h> /* library to handle IGMP packet */
+#include <netinet/in.h> /* library to work with internet address, protocols, ports */
+#include <netinet/ip.h> /* library providing support for IP header */
+#include <netinet/ip_icmp.h> /* library providing support for ICMP header */
+#include <netinet/tcp.h> /* library providing support for TCP header */
+#include <netinet/udp.h> /* library providing support for UDP header */
 #include <libgen.h>
-#include <pcap.h>
-#include <stdbool.h>
+#include <pcap.h> /* libpcap library, the program's core */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,47 +54,46 @@ If you don't want the output on terminal you can direct it to a file with the pi
     $ sudo charliethesniffer.c -i eth0 > file_with_output\n\
 Disclaimer:\nYou MUST use this tool only within environment where\nyou have officially the rights to do so.\n\n"
 #define DUMPFILE "charliedump.pcap"
-#define ERR_FOPEN_OUTPUT "fopen(output, w)"
 #define SIZE_ETHERNET 14
 
 typedef u_int tcp_seq;
 
-// extern int errno;
 extern char *optarg;
-// extern int opterr, optind;
 
-/* Structure to save arguments options */
+/* 
+ * Structure to save arguments options.
+ * I've made a struct to let it be more keen
+ * to updates.
+ */
 typedef struct {
     char         *intFace;
-    bool         output;
 } options_t;
 
 struct sockaddr_in source,dest;
 
 /* Functions prototypes */
 // Support functions
-void showInterfaces();
-void usage(char *msg);
-void showError(char *msg);
-void showStatus(char *msg);
-void ctrlCatch(int z);
+void showInterfaces();  /* Function to show the available interfaces to the user */
+void usage(char *msg);  /* Function to issuing helping message */
+void showError(char *msg);  /* Function to standardise error output */
+void showStatus(char *msg); /* Function to standardise status output */
 
 // Packet sniffer functions
-void printEthHeader(const u_char *packetBody);
-void printIpHeader(const u_char *packetBody);
-void printTcpPacket(const u_char *packetBody, int length);
-void printUdpPacket(const u_char *packetBody, int length);
-void printIcmpPacket(const u_char *packetBody, int length);
-void printIgmpPacket(packetBody, headerLen);
-void printPacketData(const u_char *data, int length);
-void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u_char *packetBody);
-int cookingPreSniffer(char *dev);
+void printEthHeader(const u_char *packetBody); /* Function to print the Ethernet Header */
+void printIpHeader(const u_char *packetBody);  /* Function to print IP header */
+void printTcpPacket(const u_char *packetBody, int length);  /* Function to print the TCP packet */
+void printUdpPacket(const u_char *packetBody, int length);  /* Function to print the UDP packet*/
+void printIcmpPacket(const u_char *packetBody, int length); /* Function to print ICMP packet */
+void printIgmpPacket(packetBody, headerLen); /* Function to print IGMP pracket */
+void printPacketData(const u_char *data, int length); /* Function to print packet data */
+void packetHandler(u_char *args, const struct pcap_pkthdr *packetHeader, const u_char *packetBody); /* Function to handle every action on the packets */
+int cookingPreSniffer(char *dev); /* Function to start capturing packets */
 
 /* main */
 int main(int argc, char *argv[]){
     int opt, id;
     // Initializing the options struct with the following values
-    options_t options = {NULL, false};
+    options_t options = {NULL};
     // Array that will be used to provide a message
     char msg[256];
 
@@ -146,13 +143,12 @@ int main(int argc, char *argv[]){
 /*-------Support functions-------*/
 /* Function to show the available interfaces to the user */
 void showInterfaces(){
-    // Array where will store any error message
-    char error[PCAP_ERRBUF_SIZE];
+    char error[PCAP_ERRBUF_SIZE]; /* Array where it'll store any error message */
 
-    // pcap structure for interfaces
-    pcap_if_t *interfaces, *temp;
-    // variable that will be useful later to print the interfaces
-    int i=0;
+    pcap_if_t *interfaces, *temp; /* pcap structure for interfaces */
+    
+    int i=0; /* variable that will be used as index later */
+    
     /*
     Looking for any interfaces on the local machine
     If pcap_findalldevs returns -1, it means that an error occured
@@ -196,11 +192,10 @@ void showStatus(char *msg){
 /*-------Packet sniffer functions-------*/
 /* Function to start capturing packets */
 int cookingPreSniffer(char *dev){
-    pcap_t *handle;
-    char errbuf[512];
-    char buf[256];
-    const u_char *packet;
-    struct pcap_pkthdr packetHeader;
+    pcap_t *handle; /* Struct that we will use to handle sniffing process and packets */
+    char errbuf[512]; /* Array that will be used by pcap_open_live to store any error message */
+    char buf[256]; /* Array that will be used to ouput messages */
+    struct pcap_pkthdr packetHeader; /* Struct to store the packet header's data */
     
     showStatus("Live capturing");
     /*
@@ -262,24 +257,26 @@ int cookingPreSniffer(char *dev){
 
 /* Function to handle every action on the packets */
 void packetHandler(u_char *dumpFile, const struct pcap_pkthdr *packetHeader, const u_char *packetBody){
-    int headerLen = packetHeader->len;
-    struct iphdr *iph = (struct iphdr*)(packetBody + sizeof(struct ethhdr));
+    int headerLen = packetHeader->len; /* Header length of the packet */
+    struct iphdr *ipHeader = (struct iphdr*)(packetBody + sizeof(struct ethhdr)); /* Creating the ipHeader struct and populating it with data gathered from packet */
+    
     pcap_dump(dumpFile, packetHeader, packetBody);
-    switch (iph->protocol){
-        case IPPROTO_ICMP:
+    
+    switch (ipHeader->protocol){
+        case IPPROTO_ICMP: /* ICMP protocol */
             printIcmpPacket(packetBody, headerLen);
             break;
-        case IPPROTO_IGMP:
+        case IPPROTO_IGMP: /* IGMP protocol */
             printIgmpPacket(packetBody, headerLen);
             break;
-        case IPPROTO_TCP:
+        case IPPROTO_TCP: /* TCP protocol */
             printTcpPacket(packetBody, headerLen);
             break;
-        case IPPROTO_UDP:
+        case IPPROTO_UDP: /* UDP protocol */
             printUdpPacket(packetBody, headerLen);
             break;
         default:
-            // othjers
+            // other protocols not yet supported (e.g. GGP)
             break;
     }
 
@@ -287,23 +284,27 @@ void packetHandler(u_char *dumpFile, const struct pcap_pkthdr *packetHeader, con
 
 /* Function to print the Ethernet Header */
 void printEthHeader(const u_char *packetBody){
-    struct ethhdr *ethHeader = (struct ethhdr *)(packetBody);
+
+    struct ethhdr *ethHeader = (struct ethhdr *)(packetBody); /* Creating the struct for ethernet header and populating it with rispective data */
 
     fprintf(stdout , "\n");
 	fprintf(stdout , "Ethernet Header\n");
-	fprintf(stdout , "   |-Destination Address  : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X \n", ethHeader->h_dest[0] , ethHeader->h_dest[1] , ethHeader->h_dest[2] , ethHeader->h_dest[3] , ethHeader->h_dest[4] , ethHeader->h_dest[5] );
-	fprintf(stdout , "   |-Source Address       : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X \n", ethHeader->h_source[0] , ethHeader->h_source[1] , ethHeader->h_source[2] , ethHeader->h_source[3] , ethHeader->h_source[4] , ethHeader->h_source[5] );
+    /* As the MAC address is in HEX we have to print it out with this technique */
+	fprintf(stdout , "   |-Destination Address  : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X \n", ethHeader->h_dest[0], ethHeader->h_dest[1], ethHeader->h_dest[2],
+                                                                                     ethHeader->h_dest[3], ethHeader->h_dest[4], ethHeader->h_dest[5]);
+	fprintf(stdout , "   |-Source Address       : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X \n", ethHeader->h_source[0], ethHeader->h_source[1], ethHeader->h_source[2],
+                                                                                     ethHeader->h_source[3], ethHeader->h_source[4], ethHeader->h_source[5]);
 	fprintf(stdout , "   |-Protocol             : %u \n",(unsigned short)ethHeader->h_proto);
 }
 
 /* Function to print IP header */
 void printIpHeader(const u_char *packetBody){
-    // PUTS HERE CALL TO printethHeaderHeader
-    printEthHeader(packetBody);
-    unsigned short ipHeaderLen;
+    unsigned short ipHeaderLen; /* variable to store IP header length */
 
-    struct iphdr *ipHeader = (struct iphdr *)(packetBody + sizeof(struct ethhdr));
-    ipHeaderLen = ipHeader->ihl*4;
+    printEthHeader(packetBody); /* Printing the ethernet header */
+    
+    struct iphdr *ipHeader = (struct iphdr *)(packetBody + sizeof(struct ethhdr)); /* creating and populating struct for IP header */
+    ipHeaderLen = ipHeader->ihl*4; /* calcultating IP header length using Internet Header Length and multipling it for bits it occupies */
 
     memset(&source, 0, sizeof(source));
     source.sin_addr.s_addr = ipHeader->saddr;
@@ -311,37 +312,34 @@ void printIpHeader(const u_char *packetBody){
     memset(&dest, 0, sizeof(dest));
     dest.sin_addr.s_addr = ipHeader->daddr;
 
-    fprintf(stdout , "\n");
-	fprintf(stdout , "IP Header\n");
-	fprintf(stdout , "   |-IP Version           : %d\n",(unsigned int)ipHeader->version);
-	fprintf(stdout , "   |-IP Header Length     : %d DWORDS or %d Bytes\n",(unsigned int)ipHeader->ihl,((unsigned int)(ipHeader->ihl))*4);
-	fprintf(stdout , "   |-Type Of Service      : %d\n",(unsigned int)ipHeader->tos);
-	fprintf(stdout , "   |-IP Total Length      : %d  Bytes(Size of Packet)\n",ntohs(ipHeader->tot_len));
-	fprintf(stdout , "   |-Identification       : %d\n",ntohs(ipHeader->id));
-	// fprintf(stdout , "   |-Reserved ZERO Field   : %d\n",(unsigned int)ipHeaderdr->ip_reserved_zero);
-	// fprintf(stdout , "   |-Dont Fragment Field   : %d\n",(unsigned int)ipHeaderdr->ip_dont_fragment);
-	// fprintf(stdout , "   |-More Fragment Field   : %d\n",(unsigned int)ipHeaderdr->ip_more_fragment);
-	fprintf(stdout , "   |-TTL                  : %d\n",(unsigned int)ipHeader->ttl);
-	fprintf(stdout , "   |-Protocol             : %d\n",(unsigned int)ipHeader->protocol);
-	fprintf(stdout , "   |-Checksum             : %d\n",ntohs(ipHeader->check));
-	fprintf(stdout , "   |-Source IP            : %s\n" , inet_ntoa(source.sin_addr) );
-	fprintf(stdout , "   |-Destination IP       : %s\n" , inet_ntoa(dest.sin_addr) );
+    fprintf(stdout, "\n");
+	fprintf(stdout, "IP Header\n");
+	fprintf(stdout, "   |-IP Version           : %d\n",(unsigned int)ipHeader->version);
+	fprintf(stdout, "   |-IP Header Length     : %d DWORDS or %d Bytes\n",(unsigned int)ipHeader->ihl,((unsigned int)(ipHeader->ihl))*4);
+	fprintf(stdout, "   |-Type Of Service      : %d\n",(unsigned int)ipHeader->tos);
+	fprintf(stdout, "   |-IP Total Length      : %d  Bytes(Size of Packet)\n",ntohs(ipHeader->tot_len));
+	fprintf(stdout, "   |-Identification       : %d\n",ntohs(ipHeader->id));
+	fprintf(stdout, "   |-TTL                  : %d\n",(unsigned int)ipHeader->ttl);
+	fprintf(stdout, "   |-Protocol             : %d\n",(unsigned int)ipHeader->protocol);
+	fprintf(stdout, "   |-Checksum             : %d\n",ntohs(ipHeader->check));
+	fprintf(stdout, "   |-Source IP            : %s\n", inet_ntoa(source.sin_addr));
+	fprintf(stdout, "   |-Destination IP       : %s\n", inet_ntoa(dest.sin_addr));
 }
 
 /* Function to print the TCP packet */
 void printTcpPacket(const u_char *packetBody, int length){
-    unsigned short ipHeaderLen;
+    unsigned short ipHeaderLen; /* variable to store IP header length */
 
-    struct iphdr *ipHeader = (struct iphdr *)( packetBody + sizeof(struct ethhdr));
-    ipHeaderLen = ipHeader->ihl*4;
+    struct iphdr *ipHeader = (struct iphdr *)( packetBody + sizeof(struct ethhdr)); /* creating and populating struct for IP header */
+    ipHeaderLen = ipHeader->ihl*4; /* calcultating IP header length using Internet Header Length and multipling it for bits it occupies */
 
-    struct tcphdr *tcpHeader = (struct tcphdr*)(packetBody + ipHeaderLen + sizeof(struct ethhdr));
+    struct tcphdr *tcpHeader = (struct tcphdr*)(packetBody + ipHeaderLen + sizeof(struct ethhdr)); /* Creating and populating struct for TCP header */
 
-    int headerLen = sizeof(struct ethhdr) + ipHeaderLen + tcpHeader->doff*4;
+    int tcpHeaderLen = sizeof(struct ethhdr) + ipHeaderLen + tcpHeader->doff*4; /* Calculating the TCP header length */
+
     fprintf(stdout, "\n===================TCP Packet===================\n");
     
-    
-    printIpHeader(packetBody);
+    printIpHeader(packetBody); /* printing IP header */
     
     fprintf(stdout, "\nTCP header\n");
     fprintf(stdout , "   |-Source Port          : %u\n",ntohs(tcpHeader->source));
@@ -349,8 +347,6 @@ void printTcpPacket(const u_char *packetBody, int length){
 	fprintf(stdout , "   |-Sequence Number      : %u\n",ntohl(tcpHeader->seq));
 	fprintf(stdout , "   |-Acknowledge Number   : %u\n",ntohl(tcpHeader->ack_seq));
 	fprintf(stdout , "   |-Header Length        : %d DWORDS or %d BYTES\n" ,(unsigned int)tcpHeader->doff,(unsigned int)tcpHeader->doff*4);
-	//fprintf(stdout , "   |-CWR Flag : %d\n",(unsigned int)tcph->cwr);
-	//fprintf(stdout , "   |-ECN Flag : %d\n",(unsigned int)tcph->ece);
 	fprintf(stdout , "   |-Urgent Flag          : %d\n",(unsigned int)tcpHeader->urg);
 	fprintf(stdout , "   |-Acknowledgement Flag : %d\n",(unsigned int)tcpHeader->ack);
 	fprintf(stdout , "   |-Push Flag            : %d\n",(unsigned int)tcpHeader->psh);
@@ -362,17 +358,15 @@ void printTcpPacket(const u_char *packetBody, int length){
 	fprintf(stdout , "   |-Urgent Pointer       : %d\n",tcpHeader->urg_ptr);
 	
 	fprintf(stdout , "\n~~~~~~~~~~~~~~~~~~~~~Data Payload~~~~~~~~~~~~~~~~~~~~~\n");
-	
-
-    // PRINT DATA DUMP CALL printHexData
+	/* From there we start printing the respective data payload of the various headers */
     fprintf(stdout, "IP header\n");
     printPacketData(packetBody, length);
     sleep(0.5);
     fprintf(stdout, "TCP header\n");
-    printPacketData(packetBody+ipHeaderLen, tcpHeader->doff*4);
+    printPacketData(packetBody + ipHeaderLen, tcpHeader->doff*4);
     sleep(0.5);
     fprintf(stdout, "Data payload\n");
-    printPacketData(packetBody+headerLen, length - headerLen);
+    printPacketData(packetBody + tcpHeaderLen, length - tcpHeaderLen);
     sleep(0.5);
 }
 
@@ -421,15 +415,14 @@ void printIcmpPacket(const u_char *packetBody, int length){
 
     int headerLen = sizeof(struct ethhdr) + ipHeaderLen + sizeof icmpHeader;
 
-    fprintf(stdout , "\n\n===================ICMP Packet===================\n");	
+    fprintf(stdout, "\n\n===================ICMP Packet===================\n");	
 	
 	printIpHeader(packetBody);
 			
-	fprintf(stdout , "\n");
+	fprintf(stdout, "\n");
 		
-	fprintf(stdout , "ICMP Header\n");
-	fprintf(stdout , "   |-Type                 : %d",(unsigned int)(icmpHeader->type));
-			
+	fprintf(stdout, "ICMP Header\n");
+	fprintf(stdout, "   |-Type                 : %d",(unsigned int)(icmpHeader->type));
 	switch(icmpHeader->type){
         case ICMP_ECHOREPLY:
             fprintf(stdout , "  (Echo Reply)\n");
@@ -472,34 +465,20 @@ void printIcmpPacket(const u_char *packetBody, int length){
             break;
         
     }
+	fprintf(stdout, "   |-Code                 : %d\n",(unsigned int)(icmpHeader->code));
+	fprintf(stdout, "   |-Checksum             : %d\n",ntohs(icmpHeader->checksum));
+	fprintf(stdout, "\n");
 
-    // if((unsigned int)(icmpHeader->type) == 11)
-	// {
-	// 	fprintf(stdout , "  (TTL Expired)\n");
-	// }
-	// else if((unsigned int)(icmpHeader->type) == ICMP_ECHOREPLY)
-	// {
-	// 	fprintf(stdout , "  (ICMP Echo Reply)\n");
-	// } else {
-    //     fprintf(stdout, "\n");
-    // }
-	fprintf(stdout , "   |-Code                 : %d\n",(unsigned int)(icmpHeader->code));
-	fprintf(stdout , "   |-Checksum             : %d\n",ntohs(icmpHeader->checksum));
-	//fprintf(stdout , "   |-ID       : %d\n",ntohs(icmph->id));
-	//fprintf(stdout , "   |-Sequence : %d\n",ntohs(icmph->sequence));
-	fprintf(stdout , "\n");
-
-	fprintf(stdout , "IP Header\n");
+	fprintf(stdout, "IP Header\n");
 	printPacketData(packetBody, ipHeaderLen);
 	sleep(0.5);
 	
-    fprintf(stdout , "UDP Header\n");
-	printPacketData(packetBody + ipHeaderLen , sizeof icmpHeader);
+    fprintf(stdout, "UDP Header\n");
+	printPacketData(packetBody + ipHeaderLen, sizeof icmpHeader);
 	sleep(0.5);
 	
-    fprintf(stdout , "Data Payload\n");	
-	//Move the pointer ahead and reduce the size of string
-	printPacketData(packetBody + headerLen , (length - headerLen));
+    fprintf(stdout, "Data Payload\n");	
+	printPacketData(packetBody + headerLen, length - headerLen);
 	sleep(0.5);
 }
 
@@ -528,7 +507,7 @@ void printIgmpPacket(const u_char *packetBody, int length){
 void printPacketData(const u_char *data, int length){
     int i , j;
 	for(i=0 ; i < length ; i++)
-	{
+{
 		if( i!=0 && i%16==0)   //if one line of hex printing is complete...
 		{
 			fprintf(stdout , "         ");
