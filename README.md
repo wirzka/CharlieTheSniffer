@@ -4,16 +4,6 @@ Charlie The Sniffer is a basic packet sniffer tool that I have created for a uni
 ### *** DISCLAIMER ***
 This tool is for educational purpose only. Before use it, you must ensure that you have the right permissions to run it. I am not responsible in any way for any illegal and/or not authorized action that you will carry out.
 
-## Random ideas on how to bring it to life
-1. Liberty to choose which interface to use (if wlan in -> what actually is monitor mode? Do we actually need it?)
-2. Printing live capture on the terminal
-3. Saving the capture on pcap files vs raw txt files (Can it be done?!)
-4. Fixed time capture vs. time stopped by key combination
-5. Which proto can we sniff by default?
-6. Adding filter to sniff specific proto
-7. It has to be a cmd line tool, so parsing argument at the beginning is a MUST -> help message is REQUIRED
-8. Give the user the choice to sniff only his traffic or all traffic coming to his in
-
 ## Table of Contents
   * [Installation](#installation)
   * [Usage](#usage)
@@ -193,6 +183,6 @@ Here you will find documents and other references that I used to bring CharlieTh
 * [RFC 793](https://tools.ietf.org/html/rfc793)
 * [Tutorials Point for C](https://www.tutorialspoint.com/cprogramming/index.htm)
 * [Write a good C main fun](https://opensource.com/article/19/5/how-write-good-c-main-function)
-* []()
+* University studying materials
 
 ***Btw, KISS is your best friend.***
