@@ -37,7 +37,7 @@ First of all, you have to download libpcap-dev on your host, to do so type:
 
 Then, reach the directory where Charlie is, then compile from terminal:
 
-``$ gcc CharlieTheSniffer.c -o CharlieTheSniffer -lpca``
+``$ gcc CharlieTheSniffer.c -o CharlieTheSniffer -lpcap``
 
 ## Usage
 Once you have complete the installation process, you can launch it with:
