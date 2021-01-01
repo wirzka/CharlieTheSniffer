@@ -7,6 +7,7 @@ This tool is for educational purpose only. Before use it, you must ensure that y
 ## Table of Contents
   * [Installation](#installation)
   * [Usage](#usage)
+    * [Tuning](#tuning)
   * [Dependencies](#dependencies)
   * [Network packets format](#network-packets-format)
     * [TCP Packet](#tcp-packet)
@@ -58,6 +59,15 @@ you have officially the rights to do so.
 ```
 
 **Remember that you have to run it as root/sudoer.**
+### Tuning
+To tune the sniffing process you can tweak two options:
+1. The number of packets that the tool should capture, change the value of PCKCNT
+
+``#define PCKCNT 100``
+
+2. The packet buffer timeout, change the valure of MS
+
+``#define MS 1000``
 
 ##  Dependencies
 
