@@ -19,6 +19,7 @@ This tool is for educational purpose only. Before use it, you must ensure that y
     * [Mid level view](#mid-level-view)
     * [Low level view](#low-level-view)
     * [Gathering the right information](#gathering-the-right-information)
+  * [Improvements](#improvements)
   * [References](#references)
   
 ## Installation
@@ -177,6 +178,15 @@ To do so, we just have to think about the packet structure. It is just a sequenc
 | IP header length            | X + Ethernet Size |
 | TCP header length | X + Ethernet Size + IP header length |
 | Payload           | X + Ethernet Size + IP header length + TCP header length |
+
+## Improvements
+
+This is a list of the next possible improvements to do:
+
+* Tweaking functionalities as command line options
+* Moving the IP header construction inside the packetHandler function
+* Support for other protocols
+* Support for "infinite" sniffing until CTRL + C hotkey
 
 ## References
 Here you will find documents and other references that I used to bring CharlieTheSniffer to life:
