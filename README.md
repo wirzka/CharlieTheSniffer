@@ -80,8 +80,14 @@ To tune the sniffing process you can tweak two options:
 
 ## Network packets format
 Before going deeper with the code, in order to gain a better understanding of the logic behind the code, we have to understand how the data transmitted are formatted.
+The protocols supported at the moment are:
+ * TCP
+ * IP
+ * ICMP
+ * IGMP
+ * UDP
+ 
 So let's begin.
-(Add quick brief on TCP/IP behaviours)
 
 ### TCP Packet
 The Transmission Control Protocol packet is composed by a header, that includes all the options and details on how the packet should be handled, and a payload, containing the actual data transmitted.
@@ -109,6 +115,12 @@ It will be as follow (source [RFC 792](https://tools.ietf.org/html/rfc792)):
 
 ![ICMP ECHO message](./img/icmpecho.PNG)
 
+### IGMP Packet
+Next, we have the Internet Group Message Protocol, as ICMP it is integrated with IP and its protocol numer is 2.
+
+The structure is quite straightforward (source [RFC 2236](https://tools.ietf.org/html/rfc2236)):
+
+![ICMP ECHO message](./img/igmpheader.png)
 
 ### UDP Datagram
 The User Datagram Protocol is the opposite of the TCP. While TCP is connection-oriented, UDP is connectionless. It does not mean that there won't be any connection as suggested, but that for each connection that will be provided it won't verify the receipt.
