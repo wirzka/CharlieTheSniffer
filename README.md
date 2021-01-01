@@ -1,5 +1,5 @@
 # CharlieTheSniffer
-Charlie The Sniffer is a basic packet sniffer tool that I have created for a university project. It is launched fromthe command line interface. It provides the live output of the sniffed traffic and/or the output in a pcap file.
+Charlie The Sniffer is a basic packet sniffer tool that I have created for a university project. It is launched from the command line interface. It provides the live output of the sniffed traffic and the output in a pcap file.
 
 ### *** DISCLAIMER ***
 This tool is for educational purpose only. Before use it, you must ensure that you have the right permissions to run it. I am not responsible in any way for any illegal and/or not authorized action that you will carry out.
