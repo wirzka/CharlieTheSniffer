@@ -120,7 +120,7 @@ Next, we have the Internet Group Message Protocol, as ICMP it is integrated with
 
 The structure is quite straightforward (source [RFC 2236](https://tools.ietf.org/html/rfc2236)):
 
-![ICMP ECHO message](./img/igmpheader.png)
+![IGMP header](./img/igmpheader.png)
 
 ### UDP Datagram
 The User Datagram Protocol is the opposite of the TCP. While TCP is connection-oriented, UDP is connectionless. It does not mean that there won't be any connection as suggested, but that for each connection that will be provided it won't verify the receipt.
@@ -213,6 +213,7 @@ Here you will find documents and other references that I used to bring CharlieTh
 * [RFC 791](https://tools.ietf.org/html/rfc791)
 * [RFC 792](https://tools.ietf.org/html/rfc792)
 * [RFC 793](https://tools.ietf.org/html/rfc793)
+* [RFC 2236](https://tools.ietf.org/html/rfc2236)
 * [Tutorials Point for C](https://www.tutorialspoint.com/cprogramming/index.htm)
 * [Write a good C main fun](https://opensource.com/article/19/5/how-write-good-c-main-function)
 * University studying materials
